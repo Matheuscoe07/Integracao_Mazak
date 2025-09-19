@@ -1,4 +1,4 @@
-# MTConnect Mini UI
+# MTConnect UI
 
 Interface web super simples em **HTML + CSS + TypeScript + Vite** para visualizar dados de uma máquina Mazak via protocolo **MTConnect**.
 
