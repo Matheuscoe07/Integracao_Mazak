@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MTConnect Mini UI</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="module" src="/src/main.ts"></script>
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <header>
+    <h1>Mazak — MTConnect (read-only)</h1>
+    <div id="status">
+      <span id="avail" class="badge">–</span>
+      <span id="exec" class="badge">–</span>
+      <span id="mode" class="badge">–</span>
+      <span id="estop" class="badge">–</span>
+      <small id="updated">—</small>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Spindle / C</h2>
+      <div class="kv"><span>Temperatura (°C)</span><strong id="temp">–</strong></div>
+      <div class="kv"><span>Ângulo C (°)</span><strong id="angle">–</strong></div>
+      <div class="kv"><span>Velocidade (RPM)</span><strong id="rpm">–</strong></div>
+      <div class="kv"><span>Override Spindle (%)</span><strong id="sovr">–</strong></div>
+    </section>
+
+    <section class="card">
+      <h2>Eixos</h2>
+      <div class="kv"><span>Posição X (mm)</span><strong id="xpos">–</strong></div>
+      <div class="kv"><span>Posição Z (mm)</span><strong id="zpos">–</strong></div>
+      <div class="kv"><span>Feed Override (%)</span><strong id="fovr">–</strong></div>
+      <div class="kv"><span>Rapid Override (%)</span><strong id="frapid">–</strong></div>
+    </section>
+
+    <section class="card">
+      <h2>Máquina</h2>
+      <div class="kv"><span>Porta</span><strong id="door">–</strong></div>
+      <div class="kv"><span>Programa</span><strong id="program">–</strong></div>
+      <div class="kv"><span>Part Count</span><strong id="partcount">–</strong></div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Fonte: <code>http://10.33.103.9:5000/current</code> • Auto-refresh 2s</small>
+  </footer>
+
+  <!-- O browser não roda TS direto; compile para JS (ver instruções abaixo) -->
+  <script type="module" src="./dist/main.js"></script>
+</body>
+</html>
