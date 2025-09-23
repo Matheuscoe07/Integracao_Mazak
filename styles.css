@@ -1,26 +1,88 @@
-:root { --bg:#0b0f12; --fg:#e8eef3; --muted:#93a1ad; --card:#12181d; --ok:#1db954; --warn:#f5a623; --bad:#ff5c5c; }
-* { box-sizing: border-box; }
-html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font: 15px/1.4 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #1c242c; }
-h1 { font-size:18px; margin:0; }
-#status { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
-.badge { background:#1c242c; color:var(--muted); padding:4px 8px; border-radius:999px; font-size:12px; }
-.badge.ok { color:#cfe; background:rgba(29,185,84,.15); border:1px solid rgba(29,185,84,.35); }
-.badge.bad { color:#fee; background:rgba(255,92,92,.15); border:1px solid rgba(255,92,92,.35); }
-.badge.warn { color:#fff7e6; background:rgba(245,166,35,.12); border:1px solid rgba(245,166,35,.35); }
-
-.grid { padding:20px; display:grid; gap:16px; grid-template-columns: repeat(12, 1fr); }
-.card { background:var(--card); border:1px solid #1c242c; border-radius:12px; padding:16px; grid-column: span 12; }
-.card h2 { margin:0 0 10px; font-size:16px; color:#d7e3ee; }
-.kv { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-top:1px dashed #22303a; }
-.kv:first-of-type { border-top:none; }
-.kv span { color:var(--muted); }
-.kv strong { font-variant-numeric: tabular-nums; font-size:18px; }
-
-@media (min-width: 900px) {
-  .card:nth-child(1) { grid-column: span 4; }
-  .card:nth-child(2) { grid-column: span 4; }
-  .card:nth-child(3) { grid-column: span 4; }
+:root{
+  --bg:#0b0f12;
+  --fg:#e8eef3;
+  --muted:#93a1ad;
+  --card:#12181d;
+  --ok:#1db954;
+  --warn:#f5a623;
+  --bad:#ff5c5c;
 }
 
-footer { padding:12px 20px; border-top:1px solid #1c242c; color:var(--muted); }
+/* base */
+*{ box-sizing:border-box }
+html,body{
+  margin:0; padding:0;
+  background:var(--bg); color:var(--fg);
+  font:15px/1.4 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* header / status */
+header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; border-bottom:1px solid #1c242c;
+}
+h1{ font-size:18px; margin:0 }
+#status{ display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+.badge{
+  background:#1c242c; color:var(--muted);
+  padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid transparent;
+}
+.badge.ok{ color:#cfe; background:rgba(29,185,84,.15); border-color:rgba(29,185,84,.35) }
+.badge.warn{ color:#fff7e6; background:rgba(245,166,35,.12); border-color:rgba(245,166,35,.35) }
+.badge.bad{ color:#fee; background:rgba(255,92,92,.15); border-color:rgba(255,92,92,.35) }
+
+/* grid / cards */
+.grid{
+  padding:20px;
+  display:grid; gap:16px;
+  grid-template-columns:repeat(12,1fr);
+}
+.card{
+  background:var(--card); border:1px solid #1c242c;
+  border-radius:12px; padding:16px; grid-column:span 12;
+}
+.card h2{ margin:0 0 10px; font-size:16px; color:#d7e3ee }
+
+/* key-values */
+.kv{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0; border-top:1px dashed #22303a;
+}
+.kv:first-of-type{ border-top:none }
+.kv span{ color:var(--muted) }
+.kv strong{ font-variant-numeric:tabular-nums; font-size:18px }
+
+/* gráficos em blocos grandes */
+.charts{
+  display:grid; gap:20px; margin-top:12px;
+  grid-template-columns:repeat(2, 1fr);    /* 2 blocos por linha no desktop */
+  grid-auto-rows:350px;                    /* altura dos blocos */
+}
+.charts canvas{
+  display:block;
+  width:100% !important;
+  height:100% !important;
+  background:#0e1419;
+  border:1px solid #1c242c; border-radius:12px;
+  padding:8px;
+}
+
+/* responsivo */
+@media (min-width:900px){
+  .card:nth-child(1){ grid-column:span 4 }
+  .card:nth-child(2){ grid-column:span 4 }
+  .card:nth-child(3){ grid-column:span 4 }
+}
+@media (max-width:1000px){
+  .charts{ grid-template-columns:1fr; grid-auto-rows:300px; } /* mobile: 1 por linha */
+}
+
+/* footer */
+footer{
+  padding:12px 20px; border-top:1px solid #1c242c; color:var(--muted);
+}
+
+/* UX suave */
+@media (prefers-reduced-motion:no-preference){
+  .badge{ transition:background-color .2s ease, border-color .2s ease, color .2s ease }
+}
