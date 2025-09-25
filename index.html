@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MTConnect Mini UI</title>
 
+  <!-- estilo -->
   <link rel="stylesheet" href="./styles.css" />
+
+  <!-- favicon “silencioso” pra não dar 404 -->
   <link rel="icon" href="data:,">
+
+  <!-- Vite carrega o TypeScript direto -->
   <script type="module" src="/src/main.ts"></script>
 </head>
 <body>
@@ -22,14 +27,7 @@
   </header>
 
   <main class="grid">
-    <section class="card">
-      <h2>Spindle / C</h2>
-      <div class="kv"><span>Temperatura (°C)</span><strong id="temp">–</strong></div>
-      <div class="kv"><span>Ângulo C (°)</span><strong id="angle">–</strong></div>
-      <div class="kv"><span>Velocidade (RPM)</span><strong id="rpm">–</strong></div>
-      <div class="kv"><span>Override Spindle (%)</span><strong id="sovr">–</strong></div>
-    </section>
-
+    <!-- CARD 1 (EIXOS) -->
     <section class="card">
       <h2>Eixos</h2>
       <div class="kv"><span>Posição X (mm)</span><strong id="xpos">–</strong></div>
@@ -38,21 +36,32 @@
       <div class="kv"><span>Rapid Override (%)</span><strong id="frapid">–</strong></div>
     </section>
 
+    <!-- CARD 2 (SPINDLE) -->
+    <section class="card">
+      <h2>Spindle / C</h2>
+      <div class="kv"><span>Ângulo C (°)</span><strong id="angle">–</strong></div>
+      <div class="kv"><span>Velocidade (RPM)</span><strong id="rpm">–</strong></div>
+      <div class="kv"><span>Override Spindle (%)</span><strong id="sovr">–</strong></div>
+    </section>
+
+    <!-- CARD 3 (MÁQUINA) -->
     <section class="card">
       <h2>Máquina</h2>
+      <div class="kv"><span>Temperatura (°C)</span><strong id="temp">–</strong></div>
       <div class="kv"><span>Porta</span><strong id="door">–</strong></div>
       <div class="kv"><span>Programa</span><strong id="program">–</strong></div>
       <div class="kv"><span>Part Count</span><strong id="partcount">–</strong></div>
     </section>
 
+    <!-- GRÁFICOS -->
     <section class="card" style="grid-column: span 12;">
       <h2>Gráficos em tempo real</h2>
       <div class="charts">
-        <canvas id="chartTemp"></canvas>
-        <canvas id="chartAngle"></canvas>
         <canvas id="chartRpm"></canvas>
+        <canvas id="chartTemp"></canvas>
         <canvas id="chartX"></canvas>
         <canvas id="chartZ"></canvas>
+        <canvas id="chartAngle"></canvas>
       </div>
     </section>
   </main>

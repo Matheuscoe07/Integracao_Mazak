@@ -230,7 +230,7 @@ function addData(
 function initCharts() {
   charts.temp  = makeLineChart('chartTemp',  'Temperatura (°C)', '#ff5c5c');
   charts.angle = makeLineChart('chartAngle', 'Ângulo C (°)',     '#f5a623');
-  charts.rpm   = makeLineChart('chartRpm',   'RPM',              '#1db954');
+  charts.rpm   = makeLineChart('chartRpm',   'Spindle (RPM)',              '#1db954');
   charts.x     = makeLineChart('chartX',     'Posição X (mm)',   '#4a90e2');
   charts.z     = makeLineChart('chartZ',     'Posição Z (mm)',   '#bd10e0');
 }
