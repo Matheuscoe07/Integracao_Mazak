@@ -55,8 +55,8 @@ h1{ font-size:18px; margin:0 }
 /* gráficos em blocos grandes */
 .charts{
   display:grid; gap:20px; margin-top:12px;
-  grid-template-columns:repeat(2, 1fr);    /* 2 blocos por linha no desktop */
-  grid-auto-rows:350px;                    /* altura dos blocos */
+  grid-template-columns:repeat(2, 1fr);
+  grid-auto-rows:420px;
 }
 .charts canvas{
   display:block;
@@ -74,7 +74,7 @@ h1{ font-size:18px; margin:0 }
   .card:nth-child(3){ grid-column:span 4 }
 }
 @media (max-width:1000px){
-  .charts{ grid-template-columns:1fr; grid-auto-rows:300px; } /* mobile: 1 por linha */
+  .charts{ grid-template-columns:1fr; grid-auto-rows:300px; }
 }
 
 /* footer */

@@ -1,6 +1,7 @@
 // src/main.ts
 import {
   Chart,
+  Title,                 // << título
   LineController,
   LineElement,
   PointElement,
@@ -10,9 +11,24 @@ import {
   Legend,
 } from 'chart.js';
 
-Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
-Chart.defaults.font.size = 16;   // fonte base maior
-Chart.defaults.font.weight = 'bold'; // peso mais forte
+// registra tudo, inclusive Title
+Chart.register(
+  Title,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend
+);
+
+// defaults globais bonitões
+Chart.defaults.font.size = 16;
+Chart.defaults.font.weight = 'bold';
+Chart.defaults.plugins.title.display = true;
+Chart.defaults.plugins.title.color = '#d7e3ee';
+Chart.defaults.plugins.title.font = { size: 28, weight: '700' } as any;
 
 const ENDPOINT = "/api/current";
 const POLL_MS = 2000;
@@ -85,7 +101,7 @@ function formatMaybeNumber(n: number | null, decimals = 3): string {
 }
 
 /* =========================
-   GRÁFICOS (Chart.js)
+    GRÁFICOS (Chart.js)
    ========================= */
 
 type Charts = {
@@ -97,6 +113,37 @@ type Charts = {
 };
 
 const charts: Charts = {};
+
+// auto-scale inteligente do eixo Y
+function autoscaleY(chart: Chart, padding = 0.08, minSpan = 1) {
+  const data = (chart.data.datasets[0].data as (number | null)[])
+    .filter((v): v is number => v != null);
+  if (!data.length) return;
+
+  let lo = Math.min(...data);
+  let hi = Math.max(...data);
+
+  if (hi - lo < minSpan) {
+    const mid = (hi + lo) / 2;
+    const half = Math.max(minSpan / 2, Math.abs(mid) * padding);
+    lo = mid - half;
+    hi = mid + half;
+  } else {
+    const span = hi - lo;
+    const pad = span * padding;
+    lo -= pad;
+    hi += pad;
+  }
+
+  const y = (chart.options.scales!.y as any);
+  y.min = lo;
+  y.max = hi;
+  y.ticks = {
+    ...(y.ticks ?? {}),
+    maxTicksLimit: 6,
+    precision: 2,
+  };
+}
 
 function makeLineChart(canvasId: string, label: string, color: string) {
   const ctx = (document.getElementById(canvasId) as HTMLCanvasElement)!.getContext('2d')!;
@@ -116,39 +163,68 @@ function makeLineChart(canvasId: string, label: string, color: string) {
       }]
     },
     options: {
-      responsive: true,
-      animation: false,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          ticks: {
-            color: '#93a1ad',
-            font: { size: 24, weight: 500 } // aumenta fonte eixo X
-          },
-          grid: { color: 'rgba(255,255,255,0.05)' }
+    responsive: true,
+    animation: false,
+    maintainAspectRatio: true,
+    layout: {
+      padding: { top: 30, left: 20, right: 20, bottom: 10 } // ↑ espaço extra pros títulos
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#93a1ad',
+          font: { size: 28, weight: 600 }  // aumenta
         },
-        y: {
-          ticks: {
-            color: '#93a1ad',
-            font: { size: 24, weight: 500 } // aumenta fonte eixo Y
-          },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        },
+        grid: { color: 'rgba(255,255,255,0.05)' }
       },
-      plugins: {
-        legend: {
-          labels: {
-            color: '#93a1ad',
-            font: { size: 24, weight: 600 } // legenda maior
-          }
+      y: {
+        grace: '5%',
+        ticks: {
+          color: '#93a1ad',
+          font: { size: 28, weight: 600 }, // aumenta
+          maxTicksLimit: 6,
         },
-        tooltip: {
-          titleFont: { size: 24, weight: 600 },
-          bodyFont: { size: 24 }
-        }
+        grid: { color: 'rgba(255,255,255,0.05)' }
+      },
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: label,
+        color: '#d7e3ee',
+        font: { size: 40, weight: 900 },   // bem maior
+        padding: { top: 0, bottom: 20 },     // ↑ distância do eixo Y
+        align: 'center'                      // centraliza (ou 'start' se preferir à esquerda)
+      },
+      legend: {
+        display: false
+      },
+      tooltip: {
+        titleFont: { size: 28, weight: 700 },
+        bodyFont:  { size: 26 }
       }
     }
+  }
   });
+}
+
+// addData com auto-scale e janela máxima
+function addData(
+  chart: Chart | undefined,
+  label: string,
+  value: number | null,
+  maxPoints = 60,
+  minSpan = 1
+) {
+  if (!chart) return;
+  chart.data.labels!.push(label);
+  (chart.data.datasets[0].data as (number | null)[]).push(value);
+  if (chart.data.labels!.length > maxPoints) {
+    chart.data.labels!.shift();
+    chart.data.datasets[0].data.shift();
+  }
+  autoscaleY(chart, 0.08, minSpan);
+  chart.update();
 }
 
 function initCharts() {
@@ -157,17 +233,6 @@ function initCharts() {
   charts.rpm   = makeLineChart('chartRpm',   'RPM',              '#1db954');
   charts.x     = makeLineChart('chartX',     'Posição X (mm)',   '#4a90e2');
   charts.z     = makeLineChart('chartZ',     'Posição Z (mm)',   '#bd10e0');
-}
-
-function addData(chart: Chart | undefined, label: string, value: number | null, maxPoints = 30) {
-  if (!chart) return;
-  chart.data.labels!.push(label);
-  (chart.data.datasets[0].data as (number | null)[]).push(value);
-  if (chart.data.labels!.length > maxPoints) {
-    chart.data.labels!.shift();
-    chart.data.datasets[0].data.shift();
-  }
-  chart.update();
 }
 
 /* =========================
@@ -230,13 +295,13 @@ async function tick(ctrl?: AbortController) {
     const pc = safeNum(txt(findByTagAndName(xml, "PartCount", "PartCountAct")));
     $("partcount").textContent = pc == null ? "–" : String(pc);
 
-    // gráficos
+    // gráficos (com janelas mínimas por métrica)
     const tLabel = new Date().toLocaleTimeString();
-    addData(charts.temp,  tLabel, temp);
-    addData(charts.angle, tLabel, angle);
-    addData(charts.rpm,   tLabel, rpmVal);
-    addData(charts.x,     tLabel, xpos);
-    addData(charts.z,     tLabel, zpos);
+    addData(charts.temp,  tLabel, temp,   60, 0.5); // 0.5 °C
+    addData(charts.angle, tLabel, angle,  60, 1);   // 1°
+    addData(charts.rpm,   tLabel, rpmVal, 60, 10);  // 10 RPM
+    addData(charts.x,     tLabel, xpos,   60, 1);   // 1 mm
+    addData(charts.z,     tLabel, zpos,   60, 1);
 
   } catch (err: any) {
     console.error(err);
